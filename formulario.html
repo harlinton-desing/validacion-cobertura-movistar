@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Dirección - Colombia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary-blue: #00D4FF;
+            --neon-green: #39FF14;
+            --cyber-purple: #6A0DAD;
+            --dark-bg: #0A0A0F;
+            --card-bg: #1A1A2E;
+            --surface: #16213E;
+            --border: #2A2A3E;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0C4;
+            --text-muted: #6B6B7D;
+            --error: #FF3366;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-2xl: 3rem;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --transition-normal: 0.3s ease;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #0F0F1A 50%, var(--dark-bg) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .main-container { max-width: 800px; margin: 0 auto; padding: var(--spacing-md); }
+
+        .gamer-header {
+            position: relative;
+            height: 250px;
+            margin-bottom: var(--spacing-2xl);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            background: linear-gradient(45deg, var(--cyber-purple), var(--primary-blue), var(--neon-green));
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .main-title {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: 900;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+        }
+
+        .title-primary, .title-secondary, .title-accent { display: block; }
+        .title-primary { color: var(--text-primary); font-size: 0.7em; letter-spacing: 0.2em; }
+        .title-secondary { color: var(--primary-blue); font-size: 1em; letter-spacing: 0.1em; }
+        .title-accent { color: var(--neon-green); font-size: 0.8em; letter-spacing: 0.15em; }
+
+        .form-container {
+            background: var(--card-bg);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl);
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--neon-green));
+            background-size: 200% 100%;
+            animation: borderGlow 3s linear infinite;
+        }
+
+        .progress-container { margin-bottom: var(--spacing-2xl); text-align: center; }
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--surface);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: var(--spacing-md);
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-blue), var(--neon-green));
+            border-radius: 3px;
+            transition: width var(--transition-normal);
+            width: 0%;
+        }
+        .progress-text { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
+
+        .form-group { margin-bottom: var(--spacing-xl); }
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+        .label-icon { font-size: 1.2em; }
+        .required-indicator { color: var(--error); font-weight: 700; margin-left: auto; }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all var(--transition-normal);
+            outline: none;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .form-input::placeholder { color: var(--text-muted); font-style: italic; }
+        .form-select:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .conditional-fields {
+            overflow: hidden;
+            transition: all var(--transition-normal);
+            border-left: 3px solid var(--primary-blue);
+            padding-left: var(--spacing-lg);
+            margin-left: var(--spacing-md);
+            background: rgba(0, 212, 255, 0.05);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        }
+
+        .conditional-fields.hidden {
+            max-height: 0;
+            opacity: 0;
+            padding: 0;
+            margin: 0;
+            border: none;
+        }
+
+        .form-actions { margin-top: var(--spacing-2xl); text-align: center; }
+        .submit-btn {
+            background: linear-gradient(45deg, var(--primary-blue), var(--neon-green));
+            border: none;
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg) var(--spacing-2xl);
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark-bg);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            min-width: 250px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+        }
+
+        .field-hint { color: var(--text-muted); font-size: 0.8rem; margin-top: var(--spacing-md); font-style: italic; }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-normal);
+        }
+
+        .modal-overlay.show { opacity: 1; visibility: visible; }
+
+        .modal-container {
+            background: var(--card-bg);
+            border-radius: var(--radius-xl);
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            transform: scale(0.9) translateY(20px);
+            transition: transform var(--transition-normal);
+        }
+
+        .modal-overlay.show .modal-container { transform: scale(1) translateY(0); }
+
+        .modal-header {
+            padding: var(--spacing-xl);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(45deg, var(--cyber-purple), var(--primary-blue));
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        }
+
+        .modal-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-normal);
+        }
+
+        .modal-close:hover { background: rgba(255, 255, 255, 0.1); transform: rotate(90deg); }
+
+        .modal-body { padding: var(--spacing-xl); }
+
+        .summary-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .summary-content {
+            background: var(--surface);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md) 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .summary-item:last-child { border-bottom: none; }
+
+        .summary-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .summary-value { color: var(--text-primary); font-weight: 500; text-align: right; }
+
+        .modal-footer {
+            padding: var(--spacing-xl);
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: var(--spacing-md) var(--spacing-xl);
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: 'Orbitron', monospace;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            min-width: 140px;
+            justify-content: center;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover { background: var(--border); transform: translateY(-2px); }
+
+        .btn-primary { background: linear-gradient(45deg, var(--primary-blue), var(--neon-green)); color: var(--dark-bg); }
+
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4); }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes borderGlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        @media (max-width: 768px) {
+            .main-container { padding: 1rem; }
+            .gamer-header { height: 180px; }
+            .form-container { padding: var(--spacing-lg); }
+            .submit-btn { min-width: 200px; }
+            .modal-container { width: 95%; margin: var(--spacing-md); }
+            .modal-footer { flex-direction: column; }
+            .modal-btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <header class="gamer-header">
+            <h1 class="main-title">
+                <span class="title-primary">VALIDACIÓN</span>
+                <span class="title-secondary">COBERTURA</span>
+                <span class="title-accent">MOVISTAR</span>
+            </h1>
+        </header>
+
+        <main class="form-container">
+            <form id="direccion-form" novalidate>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <span class="progress-text" id="progress-text">0% Completado</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="departamento" class="form-label">
+                        <span class="label-icon">🏛️</span>
+                      DEPARTAMENTO
+                        <span class="required-indicator">*</span>
+                    </label>
+                    <select id="departamento" name="departamento" class="form-select" required>
+                        <option value="">Seleccione su departamento...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="municipio" class="form-label">
+                        <span class="label-icon">🏙️</span>
+                        CIUDAD O MUNICIPIO
+                        <span class="required-indicator">*</span>
+                    </label>
+                    <select id="municipio" name="municipio" class="form-select" required disabled>
+                        <option value="">Primero seleccione un departamento...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="direccion" class="form-label">
+                        <span class="label-icon">📍</span>
+                        DIRECCION COMPLETA
+                        <span class="required-indicator">*</span>
+                    </label>
+                    <input type="text" id="direccion" name="direccion" class="form-input" 
+                           placeholder="Ej: Calle 123 #45-67" required>
+                    <div class="field-hint">Incluya calle, número y referencias importantes</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="barrio" class="form-label">
+                        <span class="label-icon">🏘️</span>
+                       BARRIO
+                        <span class="required-indicator">*</span>
+                    </label>
+                    <input type="text" id="barrio" name="barrio" class="form-input" 
+                           placeholder="Ej: Centro, La Candelaria, Chapinero" required>
+                    <div class="field-hint">Nombre del barrio o sector</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="tipo-vivienda" class="form-label">
+                        <span class="label-icon">🏠</span>
+                       TIPO DE VIVIENDA
+                        <span class="required-indicator">*</span>
+                    </label>
+                    <select id="tipo-vivienda" name="tipo-vivienda" class="form-select" required>
+                        <option value="">Seleccione el tipo de vivienda...</option>
+                        <option value="Casa">Casa</option>
+                        <option value="Conjunto">Conjunto Residencial</option>
+                    </select>
+                </div>
+
+                <div id="casa-fields" class="conditional-fields hidden">
+                    <div class="form-group">
+                        <label for="piso" class="form-label">
+                            <span class="label-icon">🏢</span>
+                        PISO
+                            <span class="required-indicator">*</span>
+                        </label>
+                        <select id="piso" name="piso" class="form-select">
+                            <option value="">Seleccione el piso...</option>
+                            <option value="1">Piso 1</option>
+                            <option value="2">Piso 2</option>
+                            <option value="3">Piso 3</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="conjunto-fields" class="conditional-fields hidden">
+                    <div class="form-group">
+                        <label for="nombre-conjunto" class="form-label">
+                            <span class="label-icon">🏘️</span>
+                          NOMBRE DEL CONJUNTO  Nombre del Conjunto
+                            <span class="required-indicator">*</span>
+                        </label>
+                        <input type="text" id="nombre-conjunto" name="nombre-conjunto" class="form-input" 
+                               placeholder="Ej: Conjunto Residencial Los Pinos">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="torre-bloque" class="form-label">
+                            <span class="label-icon">🏗️</span>
+                            TORRE/BLOQUE
+                            <span class="required-indicator">*</span>
+                        </label>
+                        <input type="text" id="torre-bloque" name="torre-bloque" class="form-input" 
+                               placeholder="Ej: Torre A, Bloque 3, Edificio Norte">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="apto" class="form-label">
+                            <span class="label-icon">🚪</span>
+                            APARTAMENTO/#CASA
+                            <span class="required-indicator">*</span>
+                        </label>
+                        <input type="text" id="apto" name="apto" class="form-input" 
+                               placeholder="Ej: Apto 101, Casa 25">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">ENVIAR</button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="confirmation-modal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <span>✅</span>
+                    CONFIRMAR INFORMACIÓN
+                </h2>
+                <button class="modal-close" id="modal-close">✕</button>
+            </div>
+            
+            <div class="modal-body">
+                <h3 class="summary-title">RESUMEN:</h3>
+                <div class="summary-content" id="summary-content"></div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="modal-btn btn-secondary" id="btn-corregir">
+                    <span>✏️</span>
+                 CORREGIR
+                </button>
+                <button class="modal-btn btn-primary" id="btn-confirmar">
+                    <span>📱</span>
+                    CONFIRMAR 
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ColombianData = {
+            departments: [
+                { code: 'AMA', name: 'Amazonas' },
+                { code: 'ANT', name: 'Antioquia' },
+                { code: 'ARA', name: 'Arauca' },
+                { code: 'ATL', name: 'Atlántico' },
+                { code: 'BOL', name: 'Bolívar' },
+                { code: 'BOY', name: 'Boyacá' },
+                { code: 'CAL', name: 'Caldas' },
+                { code: 'CAQ', name: 'Caquetá' },
+                { code: 'CAS', name: 'Casanare' },
+                { code: 'CAU', name: 'Cauca' },
+                { code: 'CES', name: 'Cesar' },
+                { code: 'CHO', name: 'Chocó' },
+                { code: 'COR', name: 'Córdoba' },
+                { code: 'CUN', name: 'Cundinamarca' },
+                { code: 'GUA', name: 'Guainía' },
+                { code: 'GUV', name: 'Guaviare' },
+                { code: 'HUI', name: 'Huila' },
+                { code: 'LAG', name: 'La Guajira' },
+                { code: 'MAG', name: 'Magdalena' },
+                { code: 'MET', name: 'Meta' },
+                { code: 'NAR', name: 'Nariño' },
+                { code: 'NSA', name: 'Norte de Santander' },
+                { code: 'PUT', name: 'Putumayo' },
+                { code: 'QUI', name: 'Quindío' },
+                { code: 'RIS', name: 'Risaralda' },
+                { code: 'SAP', name: 'San Andrés y Providencia' },
+                { code: 'SAN', name: 'Santander' },
+                { code: 'SUC', name: 'Sucre' },
+                { code: 'TOL', name: 'Tolima' },
+                { code: 'VAC', name: 'Valle del Cauca' },
+                { code: 'VAU', name: 'Vaupés' },
+                { code: 'VIC', name: 'Vichada' }
+            ],
+
+            municipalities: {
+                'AMA': ['Leticia', 'Puerto Nariño'],
+                'ANT': ['Medellín', 'Bello', 'Itagüí', 'Envigado', 'Apartadó', 'Turbo', 'Rionegro', 'Sabaneta'],
+                'ARA': ['Arauca', 'Arauquita', 'Cravo Norte', 'Fortul', 'Puerto Rondón', 'Saravena', 'Tame'],
+                'ATL': ['Barranquilla', 'Soledad', 'Malambo', 'Sabanagrande', 'Puerto Colombia', 'Galapa'],
+                'BOL': ['Cartagena', 'Magangué', 'Turbaco', 'Arjona', 'El Carmen de Bolívar', 'San Pablo'],
+                'BOY': ['Tunja', 'Duitama', 'Sogamoso', 'Chiquinquirá', 'Paipa', 'Villa de Leyva'],
+                'CAL': ['Manizales', 'La Dorada', 'Chinchiná', 'Riosucio', 'Anserma', 'Villamaría'],
+                'CAQ': ['Florencia', 'San Vicente del Caguán', 'Puerto Rico', 'El Doncello'],
+                'CAS': ['Yopal', 'Aguazul', 'Tauramena', 'Villanueva', 'Monterrey'],
+                'CAU': ['Popayán', 'Santander de Quilichao', 'Puerto Tejada', 'Guapi', 'Corinto'],
+                'CES': ['Valledupar', 'Aguachica', 'Bosconia', 'Codazzi', 'La Jagua de Ibirico'],
+                'CHO': ['Quibdó', 'Istmina', 'Condoto', 'Tadó', 'Acandí', 'Riosucio'],
+                'COR': ['Montería', 'Lorica', 'Cereté', 'Sahagún', 'Planeta Rica', 'Montelíbano'],
+                'CUN': ['Bogotá D.C.', 'Soacha', 'Girardot', 'Zipaquirá', 'Facatativá', 'Chía', 'Mosquera'],
+                'GUA': ['Inírida'],
+                'GUV': ['San José del Guaviare', 'Calamar', 'El Retorno', 'Miraflores'],
+                'HUI': ['Neiva', 'Pitalito', 'Garzón', 'La Plata', 'Campoalegre', 'Timaná'],
+                'LAG': ['Riohacha', 'Maicao', 'Uribia', 'Manaure', 'San Juan del Cesar'],
+                'MAG': ['Santa Marta', 'Ciénaga', 'Fundación', 'Aracataca', 'El Banco', 'Plato'],
+                'MET': ['Villavicencio', 'Acacías', 'Granada', 'San Martín', 'Puerto López'],
+                'NAR': ['Pasto', 'Tumaco', 'Ipiales', 'Túquerres', 'Samaniego', 'La Unión'],
+                'NSA': ['Cúcuta', 'Ocaña', 'Villa del Rosario', 'Los Patios', 'Pamplona'],
+                'PUT': ['Mocoa', 'Puerto Asís', 'Orito', 'Valle del Guamuez'],
+                'QUI': ['Armenia', 'Calarcá', 'La Tebaida', 'Montenegro', 'Quimbaya'],
+                'RIS': ['Pereira', 'Dosquebradas', 'Santa Rosa de Cabal', 'La Virginia'],
+                'SAP': ['San Andrés', 'Providencia'],
+                'SAN': ['Bucaramanga', 'Floridablanca', 'Girón', 'Piedecuesta', 'Barrancabermeja'],
+                'SUC': ['Sincelejo', 'Corozal', 'Sampués', 'San Marcos', 'Tolú'],
+                'TOL': ['Ibagué', 'Espinal', 'Melgar', 'Honda', 'Líbano', 'Chaparral'],
+                'VAC': ['Cali', 'Palmira', 'Buenaventura', 'Tuluá', 'Cartago', 'Buga'],
+                'VAU': ['Mitú'],
+                'VIC': ['Puerto Carreño', 'La Primavera', 'Santa Rosalía']
+            },
+
+            getMunicipalities(departmentCode) {
+                return this.municipalities[departmentCode] || [];
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const departamentoSelect = document.getElementById('departamento');
+            const municipioSelect = document.getElementById('municipio');
+            const tipoViviendaSelect = document.getElementById('tipo-vivienda');
+            const casaFields = document.getElementById('casa-fields');
+            const conjuntoFields = document.getElementById('conjunto-fields');
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            const form = document.getElementById('direccion-form');
+            const modal = document.getElementById('confirmation-modal');
+            const modalClose = document.getElementById('modal-close');
+            const btnCorregir = document.getElementById('btn-corregir');
+            const btnConfirmar = document.getElementById('btn-confirmar');
+            const summaryContent = document.getElementById('summary-content');
+
+            // Populate departments
+            ColombianData.departments.forEach(dept => {
+                const option = document.createElement('option');
+                option.value = dept.code;
+                option.textContent = dept.name;
+                departamentoSelect.appendChild(option);
+            });
+
+            // Handle department change
+            departamentoSelect.addEventListener('change', function() {
+                const departmentCode = this.value;
+                municipioSelect.innerHTML = '<option value="">Seleccione un municipio...</option>';
+                municipioSelect.disabled = !departmentCode;
+
+                if (departmentCode) {
+                    const municipalities = ColombianData.getMunicipalities(departmentCode);
+                    municipalities.forEach(municipality => {
+                        const option = document.createElement('option');
+                        option.value = municipality;
+                        option.textContent = municipality;
+                        municipioSelect.appendChild(option);
+                    });
+                }
+                updateProgress();
+            });
+
+            // Handle housing type change
+            tipoViviendaSelect.addEventListener('change', function() {
+                const housingType = this.value;
+                casaFields.classList.add('hidden');
+                conjuntoFields.classList.add('hidden');
+
+                if (housingType === 'Casa') {
+                    setTimeout(() => casaFields.classList.remove('hidden'), 100);
+                } else if (housingType === 'Conjunto') {
+                    setTimeout(() => conjuntoFields.classList.remove('hidden'), 100);
+                }
+                updateProgress();
+            });
+
+            // Progress tracking
+            function updateProgress() {
+                const fields = [
+                    departamentoSelect.value,
+                    municipioSelect.value,
+                    document.getElementById('direccion').value,
+                    document.getElementById('barrio').value,
+                    tipoViviendaSelect.value
+                ];
+
+                let completed = fields.filter(field => field.trim()).length;
+                
+                if (tipoViviendaSelect.value === 'Casa') {
+                    if (document.getElementById('piso').value) completed++;
+                } else if (tipoViviendaSelect.value === 'Conjunto') {
+                    const conjuntoInputs = [
+                        document.getElementById('nombre-conjunto').value,
+                        document.getElementById('torre-bloque').value,
+                        document.getElementById('apto').value
+                    ].filter(val => val.trim());
+                    completed += conjuntoInputs.length;
+                }
+
+                const total = tipoViviendaSelect.value === 'Casa' ? 6 : 
+                             tipoViviendaSelect.value === 'Conjunto' ? 8 : 5;
+                
+                const percentage = Math.round((completed / total) * 100);
+                progressFill.style.width = percentage + '%';
+                progressText.textContent = percentage + '% Completado';
+            }
+
+            // Add progress tracking to all inputs
+            document.querySelectorAll('.form-input, .form-select').forEach(element => {
+                element.addEventListener('input', updateProgress);
+                element.addEventListener('change', updateProgress);
+            });
+
+            // Show modal function
+            function showModal(formData) {
+                summaryContent.innerHTML = '';
+                
+                const items = [
+                    { icon: '🏛️', label: 'Departamento', value: formData.departamento },
+                    { icon: '🏙️', label: 'Municipio', value: formData.municipio },
+                    { icon: '📍', label: 'Dirección', value: formData.direccion },
+                    { icon: '🏘️', label: 'Barrio', value: formData.barrio },
+                    { icon: '🏠', label: 'Tipo de Vivienda', value: formData.tipoVivienda }
+                ];
+
+                if (formData.tipoVivienda === 'Casa') {
+                    items.push({ icon: '🏢', label: 'Piso', value: formData.piso });
+                } else if (formData.tipoVivienda === 'Conjunto') {
+                    items.push(
+                        { icon: '🏘️', label: 'Nombre del Conjunto', value: formData.nombreConjunto },
+                        { icon: '🏗️', label: 'Torre/Bloque', value: formData.torreBloque },
+                        { icon: '🚪', label: 'Apartamento/Casa', value: formData.apto }
+                    );
+                }
+
+                items.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'summary-item';
+                    div.innerHTML = `
+                        <span class="summary-label">
+                            <span>${item.icon}</span>
+                            ${item.label}:
+                        </span>
+                        <span class="summary-value">${item.value}</span>
+                    `;
+                    summaryContent.appendChild(div);
+                });
+
+                modal.classList.add('show');
+            }
+
+            // Hide modal function
+            function hideModal() {
+                modal.classList.remove('show');
+            }
+
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    departamento: departamentoSelect.options[departamentoSelect.selectedIndex].text,
+                    municipio: municipioSelect.value,
+                    direccion: document.getElementById('direccion').value,
+                    barrio: document.getElementById('barrio').value,
+                    tipoVivienda: tipoViviendaSelect.value
+                };
+
+                if (tipoViviendaSelect.value === 'Casa') {
+                    formData.piso = document.getElementById('piso').value;
+                } else if (tipoViviendaSelect.value === 'Conjunto') {
+                    formData.nombreConjunto = document.getElementById('nombre-conjunto').value;
+                    formData.torreBloque = document.getElementById('torre-bloque').value;
+                    formData.apto = document.getElementById('apto').value;
+                }
+
+                // Validation
+                const requiredFields = ['departamento', 'municipio', 'direccion', 'barrio', 'tipoVivienda'];
+                const missingFields = requiredFields.filter(field => !formData[field]);
+                
+                if (missingFields.length > 0) {
+                    alert('Por favor complete todos los campos requeridos');
+                    return;
+                }
+
+                if (tipoViviendaSelect.value === 'Casa' && !formData.piso) {
+                    alert('Por favor seleccione un piso');
+                    return;
+                }
+
+                if (tipoViviendaSelect.value === 'Conjunto') {
+                    if (!formData.nombreConjunto || !formData.torreBloque || !formData.apto) {
+                        alert('Por favor complete todos los campos del conjunto');
+                        return;
+                    }
+                }
+
+                showModal(formData);
+            });
+
+            // Modal event listeners
+            modalClose.addEventListener('click', hideModal);
+            btnCorregir.addEventListener('click', hideModal);
+
+            // Click outside modal to close
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    hideModal();
+                }
+            });
+
+            // Escape key to close modal
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.classList.contains('show')) {
+                    hideModal();
+                }
+            });
+
+            // Confirm and send to WhatsApp
+            btnConfirmar.addEventListener('click', function() {
+                const formData = {};
+                
+                // Get current form data
+                formData.departamento = departamentoSelect.options[departamentoSelect.selectedIndex].text;
+                formData.municipio = municipioSelect.value;
+                formData.direccion = document.getElementById('direccion').value;
+                formData.barrio = document.getElementById('barrio').value;
+                formData.tipoVivienda = tipoViviendaSelect.value;
+
+                if (tipoViviendaSelect.value === 'Casa') {
+                    formData.piso = document.getElementById('piso').value;
+                } else if (tipoViviendaSelect.value === 'Conjunto') {
+                    formData.nombreConjunto = document.getElementById('nombre-conjunto').value;
+                    formData.torreBloque = document.getElementById('torre-bloque').value;
+                    formData.apto = document.getElementById('apto').value;
+                }
+
+                // Create WhatsApp message
+                let message = '🏠 *INFORMACIÓN DE DIRECCIÓN*\n\n';
+                message += '📍 *Ubicación:*\n';
+                message += '• Departamento: ' + formData.departamento + '\n';
+                message += '• Municipio: ' + formData.municipio + '\n';
+                message += '• Dirección: ' + formData.direccion + '\n';
+                message += '• Barrio: ' + formData.barrio + '\n\n';
+                message += '🏘️ *Tipo de Vivienda:* ' + formData.tipoVivienda + '\n';
+                
+                if (formData.tipoVivienda === 'Casa') {
+                    message += '• Piso: ' + formData.piso + '\n';
+                } else if (formData.tipoVivienda === 'Conjunto') {
+                    message += '• Conjunto: ' + formData.nombreConjunto + '\n';
+                    message += '• Torre/Bloque: ' + formData.torreBloque + '\n';
+                    message += '• Apartamento/Casa: ' + formData.apto + '\n';
+                }
+                
+                message += '\n⏰ *Enviado:* ' + new Date().toLocaleString('es-CO') + '\n';
+               
+
+                // Open WhatsApp with specific number
+                const encodedMessage = encodeURIComponent(message);
+                const whatsappUrl = 'https://wa.me/573125198465?text=' + encodedMessage;
+                window.open(whatsappUrl, '_blank');
+                
+                hideModal();
+                alert('¡Datos enviados a WhatsApp correctamente!');
+                
+                // Reset form
+                form.reset();
+                casaFields.classList.add('hidden');
+                conjuntoFields.classList.add('hidden');
+                municipioSelect.disabled = true;
+                updateProgress();
+            });
+
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
